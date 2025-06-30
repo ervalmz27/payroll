@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2022",                                  /* Specify what JS language features to downlevel to */
+    "module": "commonjs",                               /* Specify module code generation: "commonjs", "amd", "system", "umd", "es2015", "es2020", or "ESNext". */
+    "lib": ["es2022"],                                  /* Specify library files to be included in the compilation. */
+    "outDir": "./dist",                                 /* Redirect output structure to the directory. */
+    "rootDir": "./src",                                 /* Specify the root directory of input files. */
+    "strict": true,                                     /* Enable all strict type-checking options. */
+    "esModuleInterop": true,                            /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "skipLibCheck": true,                               /* Skip type checking of declaration files. */
+    "forceConsistentCasingInFileNames": true,           /* Disallow inconsistently-cased references to the same file. */
+    "resolveJsonModule": true,                          /* Include modules imported with '.json' extension */
+    "moduleResolution": "node",                         /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "sourceMap": true                                   /* Generates corresponding '.map' file. */
+  },
+  "include": [
+    "src/**/*.ts",
+    ".env" 
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

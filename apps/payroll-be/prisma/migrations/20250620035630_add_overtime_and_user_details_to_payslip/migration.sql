@@ -1,0 +1,20 @@
+-- AlterTable
+ALTER TABLE `Payslip` ADD COLUMN `overtime` DECIMAL(65, 30) NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `npwp` VARCHAR(191) NULL,
+    ADD COLUMN `position` VARCHAR(191) NULL;
+
+-- CreateTable
+CREATE TABLE `ActivityLog` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NULL,
+    `activity` VARCHAR(191) NOT NULL,
+    `type` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `ActivityLog` ADD CONSTRAINT `ActivityLog_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      Int              @id @default(autoincrement())
+  username                String           @unique
+  email                   String           @unique
+  password                String
+  name                    String
+  department              String?
+  salary                  Decimal          @default(0)
+  npwp                    String?
+  position                String?
+  status                  String           @default("active")
+  joinDate                DateTime         @default(now())
+  roles                   UserRole[]
+  payslips                Payslip[]
+  payrollProcessesStarted PayrollProcess[] @relation("UserStartedPayrollProcesses")
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  activityLogs            ActivityLog[]
+}
+
+model UserRole {
+  id     Int    @id @default(autoincrement())
+  role   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model PayrollProcess {
+  id              Int       @id @default(autoincrement())
+  payrollPeriod   DateTime
+  paymentDate     DateTime
+  totalEmployees  Int       @default(0)
+  processedCount  Int       @default(0)
+  pendingCount    Int       @default(0)
+  startedByUserId Int
+  startedByUser   User      @relation("UserStartedPayrollProcesses", fields: [startedByUserId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  status          String    @default("Pending")
+  // Relasi ke detail slip gaji yang dihasilkan oleh proses ini
+  payslips        Payslip[]
+
+  @@unique([payrollPeriod])
+}
+
+model Payslip {
+  id                        Int            @id @default(autoincrement())
+  userId                    Int
+  user                      User           @relation(fields: [userId], references: [id])
+  payrollProcessId          Int
+  payrollProcess            PayrollProcess @relation(fields: [payrollProcessId], references: [id])
+  period                    DateTime // Periode slip gaji (misal, 2025-06-01)
+  grossSalary               Decimal
+  totalAllowances           Decimal
+  overtime                  Decimal        @default(0)
+  totalDeductions           Decimal
+  netSalary                 Decimal
+  taxAmount                 Decimal
+  bpjsKesehatanAmount       Decimal
+  bpjsKetenagakerjaanAmount Decimal
+  status                    String         @default("Pending")
+  details                   Json?
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @updatedAt
+
+  // Tambahkan unique constraint komposit ini
+  @@unique([userId, period, payrollProcessId])
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int? // User yang melakukan aktivitas (opsional)
+  user      User?    @relation(fields: [userId], references: [id])
+  activity  String // Deskripsi aktivitas (e.g., "Payroll Maya Sari telah diproses")
+  type      String // Tipe aktivitas (e.g., "Payroll", "Report", "UserManagement")
+  createdAt DateTime @default(now())
+}
